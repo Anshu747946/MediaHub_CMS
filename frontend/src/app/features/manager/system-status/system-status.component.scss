@@ -1,0 +1,18 @@
+.stat-content { padding: 18px; }
+.stat-icon { font-size: 14px; height: 14px; width: 14px; margin-right: 4px; vertical-align: middle; }
+.stat-value-sm { font-size: 20px; }
+.channels-content { padding: 4px 0 12px; }
+.spinner-wrap { display: flex; justify-content: center; padding: 32px; }
+.channel-row { display: flex; align-items: center; gap: 12px; padding: 12px 20px; border-bottom: 1px solid rgba(255,255,255,.04); }
+.channel-row:last-child { border-bottom: none; }
+.channel-icon { color: var(--teal); }
+.channel-info { flex: 1; min-width: 0; }
+.channel-name { font-size: 13px; font-weight: 500; color: var(--text-primary); }
+.channel-endpoint { font-size: 11px; color: var(--text-muted); }
+.refresh-btn { margin-top: 16px; }
+.btn-icon { font-size: 16px; height: 16px; width: 16px; margin-right: 4px; }
+.channel-actions { display: flex; align-items: center; gap: 12px; }
+.status-label { font-size: 12px; font-weight: 600; text-transform: uppercase; }
+.status-label.active { color: var(--accent); }
+.status-label.inactive { color: var(--text-muted); }
+

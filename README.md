@@ -1,109 +1,72 @@
-# MediaHub CMS
+# MediaHub CMS — v3 (Routing Fixed + Full Role Coverage)
 
-MediaHub CMS is a full-stack content management system designed for media teams to manage content creation, review, approval, distribution, and analytics through a unified platform.
+## What changed in this version
 
-The application includes role-based access for creators, editors, managers, and marketing users, with secure authentication, workflow-driven approvals, and dashboard monitoring for content operations.
+### 1. Routing bug fixed
+Every sidebar nav item now points to a route that actually exists. Previously
+"Team", "Analytics", and other links fell through to the app's wildcard route
+and redirected to `/login`, which looked like being signed out. Root cause:
+`shell.component.ts` referenced routes that were never registered in
+`app.routes.ts`. All routes are now registered as children of the shell route.
 
-## Features
+### 2. Full feature coverage per role (matching the case study exactly)
 
-- User authentication and authorization with JWT
-- Role-based dashboards for different users
-- Content creation, editing, review, and approval workflows
-- Content distribution and marketing coordination
-- Metrics and analytics views for operational visibility
-- Spring Boot backend with REST APIs
-- Angular frontend with a modern responsive UI
+| Role | Pages | Case study requirement |
+|---|---|---|
+| Content Creator | My Content | Upload, manage, edit content; track status |
+| Editor | Review Queue (+ content preview dialog) | Review, approve, schedule; track workflow |
+| Marketing | Distribution, **Analytics (new)** | Distribute to channels; monitor engagement |
+| Manager | Overview, **Team (new)**, System | Monitor performance; track team activity |
+| IT Support | System, Team | Data security, integrations, uptime |
 
-## Tech Stack
+**New backend endpoint added:** `GET /api/users` (Manager + IT Support only) —
+backs the new Team page. This is the only backend change; everything else
+uses APIs that already existed.
 
-### Backend
-- Java
-- Spring Boot
-- Spring Security
-- JWT authentication
-- Maven
+**New frontend pages added:**
+- `manager-team` — user roster with content-count per person
+- `system-status` — channel connection health + API status, for IT Support
+- `marketing-analytics` — engagement metrics per published content item
+- `content-preview-dialog` — lets editors read the full content body before approving (previously they only saw a title)
+- `distribute-dialog` — marketing now picks specific channels instead of always distributing to all 4
 
-### Frontend
-- Angular
-- TypeScript
-- SCSS
-- Angular Material
+### 3. Angular file structure standardised
+Every component was converted from inline `template`/`styles` strings to
+separate files using `templateUrl` / `styleUrl`, each in its own folder:
 
-### Database
-- SQL schema included in `database/schema.sql`
-
-## Project Structure
-
-```text
-README.md
-backend/
-  src/
-  target/
-database/
-  schema.sql
-frontend/
-  src/
+```
+feature-name/
+  feature-name.component.ts
+  feature-name.component.html
+  feature-name.component.scss
 ```
 
-## Prerequisites
+This matches standard Angular project conventions and is much easier to
+navigate and edit.
 
-Before running the project, make sure you have the following installed:
+---
 
-- Java JDK 17+
-- Maven
-- Node.js and npm
-- Angular CLI
-- A SQL database compatible with the backend configuration
+## Setup
 
-## Backend Setup
+### 1. Database
+```bash
+mysql -u root -p < database/schema.sql
+```
 
-1. Navigate to the backend folder:
+### 2. Backend
+Open `backend/` in IntelliJ, set your MySQL password in
+`application.properties`, run `MediaHubApplication.java`.
 
-   ```bash
-   cd backend
-   ```
+### 3. Frontend
+```bash
+cd frontend
+npm install
+ng serve
+```
 
-2. Configure your database connection in the backend application properties file.
-
-3. Run the Spring Boot app:
-
-   ```bash
-   mvn spring-boot:run
-   ```
-
-## Frontend Setup
-
-1. Navigate to the frontend folder:
-
-   ```bash
-   cd frontend
-   ```
-
-2. Install dependencies:
-
-   ```bash
-   npm install
-   ```
-
-3. Start the Angular application:
-
-   ```bash
-   npm start
-   ```
-
-## Usage
-
-The platform is intended for content teams that need to:
-
-- create and manage content assets
-- track progress through review stages
-- approve and publish content
-- monitor distribution and performance metrics
-
-## Notes
-
-This repository is structured as a full-stack application and is suitable for learning, collaboration, and deployment with appropriate environment configuration.
-
-## Repository Status
-
-The project has been pushed to GitHub and is ready for sharing and further development.
+Login with any demo account (password `Test@1234`):
+- alice@mediahub.com — Content Creator
+- bob@mediahub.com — Editor
+- carol@mediahub.com — Marketing
+- dave@mediahub.com — Manager
+- eve@mediahub.com — IT Support

@@ -1,0 +1,100 @@
+<div class="page-header">
+  <h1>Analytics Dashboard</h1>
+  <p>Track engagement across all published content</p>
+</div>
+
+@if (loading()) {
+  <div class="spinner-wrap"><mat-spinner diameter="40"></mat-spinner></div>
+} @else if (content().length === 0) {
+  <mat-card>
+    <mat-card-content class="empty-content">
+      <mat-icon class="empty-icon">insert_chart_outlined</mat-icon>
+      <div class="empty-title">No published content yet</div>
+      <div class="empty-sub">Metrics will appear here once content is distributed</div>
+    </mat-card-content>
+  </mat-card>
+} @else {
+  <!-- Global Aggregate Stats -->
+  <div class="stats-row cols-5">
+    <mat-card class="stat-card blue">
+      <mat-card-content class="stat-content">
+        <div class="stat-label"><mat-icon class="stat-icon">visibility</mat-icon>Total Views</div>
+        <div class="stat-value">{{ totalViews() | number }}</div>
+      </mat-card-content>
+    </mat-card>
+    <mat-card class="stat-card accent">
+      <mat-card-content class="stat-content">
+        <div class="stat-label"><mat-icon class="stat-icon">favorite</mat-icon>Total Likes</div>
+        <div class="stat-value">{{ totalLikes() | number }}</div>
+      </mat-card-content>
+    </mat-card>
+    <mat-card class="stat-card teal">
+      <mat-card-content class="stat-content">
+        <div class="stat-label"><mat-icon class="stat-icon">share</mat-icon>Total Shares</div>
+        <div class="stat-value">{{ totalShares() | number }}</div>
+      </mat-card-content>
+    </mat-card>
+    <mat-card class="stat-card warning">
+      <mat-card-content class="stat-content">
+        <div class="stat-label"><mat-icon class="stat-icon">forum</mat-icon>Comments</div>
+        <div class="stat-value">{{ totalComments() | number }}</div>
+      </mat-card-content>
+    </mat-card>
+    <mat-card class="stat-card purple">
+      <mat-card-content class="stat-content">
+        <div class="stat-label"><mat-icon class="stat-icon">trending_up</mat-icon>Engagement</div>
+        <div class="stat-value">{{ engagementRate() | number:'1.1-1' }}%</div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <!-- Leaderboard -->
+  <div class="leaderboard-section">
+    <h2 class="section-title">Top Performing Content</h2>
+    <div class="table-card">
+      @for (item of content(); track item.id; let i = $index) {
+        <div class="analytics-row" [class.top-three]="i < 3">
+          <div class="rank-badge" [class.gold]="i===0" [class.silver]="i===1" [class.bronze]="i===2">{{ i + 1 }}</div>
+          
+          <mat-icon class="content-icon">
+            {{ item.contentType === 'VIDEO' ? 'videocam' : item.contentType === 'PODCAST' ? 'mic' : item.contentType === 'IMAGE' ? 'image' : 'article' }}
+          </mat-icon>
+          
+          <div class="content-info">
+            <div class="content-title">{{ item.title }}</div>
+            <div class="content-meta">By {{ item.createdByName }} &middot; {{ item.publishedAt | date:'dd MMM yyyy' }}</div>
+          </div>
+
+          <div class="metrics-grid">
+            <div class="metric-col">
+              <span class="m-val">{{ item.metrics?.totalViews ?? 0 | number }}</span>
+              <span class="m-lbl">Views</span>
+            </div>
+            <div class="metric-col">
+              <span class="m-val">{{ item.metrics?.totalLikes ?? 0 | number }}</span>
+              <span class="m-lbl">Likes</span>
+            </div>
+            <div class="metric-col">
+              <span class="m-val">{{ item.metrics?.totalShares ?? 0 | number }}</span>
+              <span class="m-lbl">Shares</span>
+            </div>
+            <div class="metric-col">
+              <span class="m-val">{{ item.metrics?.totalComments ?? 0 | number }}</span>
+              <span class="m-lbl">Comments</span>
+            </div>
+            
+            <div class="engagement-bar-wrap">
+              <span class="m-lbl">Eng. Rate</span>
+              <!-- Simple visualization of engagement relative to views -->
+              <mat-progress-bar 
+                mode="determinate" 
+                [value]="((item.metrics?.totalLikes ?? 0) + (item.metrics?.totalShares ?? 0) + (item.metrics?.totalComments ?? 0)) / ((item.metrics?.totalViews ?? 1) || 1) * 100" 
+                class="eng-bar">
+              </mat-progress-bar>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+}

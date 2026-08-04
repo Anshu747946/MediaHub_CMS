@@ -1,0 +1,47 @@
+<div class="auth-wrapper">
+  <div class="auth-box">
+    <mat-card class="auth-card">
+      <div class="logo-block">
+        <div class="logo-icon">M</div>
+        <h1>MediaHub CMS</h1>
+        <p>Sign in to your workspace</p>
+      </div>
+
+      @if (error()) {
+        <div class="error-banner">{{ error() }}</div>
+      }
+
+      <form [formGroup]="form" (ngSubmit)="onSubmit()">
+        <mat-form-field appearance="outline" class="field">
+          <mat-label>Email address</mat-label>
+          <input matInput formControlName="email" type="email" placeholder="you@mediahub.com"/>
+          <mat-icon matSuffix class="suffix-icon">mail_outline</mat-icon>
+          @if (form.get('email')?.invalid && form.get('email')?.touched) {
+            <mat-error>Please enter a valid email</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="field field-last">
+          <mat-label>Password</mat-label>
+          <input matInput formControlName="password" [type]="showPw() ? 'text' : 'password'" placeholder="••••••••"/>
+          <button mat-icon-button matSuffix type="button" (click)="showPw.set(!showPw())">
+            <mat-icon class="suffix-icon">{{ showPw() ? 'visibility_off' : 'visibility' }}</mat-icon>
+          </button>
+          @if (form.get('password')?.invalid && form.get('password')?.touched) {
+            <mat-error>Password is required</mat-error>
+          }
+        </mat-form-field>
+
+        <button mat-raised-button color="primary" type="submit" [disabled]="loading()" class="submit-btn">
+          @if (loading()) { <mat-spinner diameter="20" class="btn-spinner"></mat-spinner> }
+          @else { Sign in }
+        </button>
+      </form>
+
+      <p class="footer-text">
+        No account? <a routerLink="/register" class="footer-link">Register here</a>
+      </p>
+    </mat-card>
+  </div>
+</div>
+

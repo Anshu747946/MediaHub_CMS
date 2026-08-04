@@ -1,0 +1,119 @@
+<div class="page-header">
+  <h1>Manager Dashboard</h1>
+  <p>Track content performance, team output, and pipeline health</p>
+</div>
+
+@if (loading()) {
+  <div class="spinner-wrap"><mat-spinner diameter="40"></mat-spinner></div>
+} @else if (dashboard()) {
+
+  <div class="stats-row cols-4">
+    <mat-card class="stat-card blue">
+      <mat-card-content class="stat-content">
+        <div class="stat-label"><mat-icon class="stat-icon">layers</mat-icon>Total Content</div>
+        <div class="stat-value">{{ dashboard()!.totalContent }}</div>
+        <div class="stat-sub">Across all statuses</div>
+      </mat-card-content>
+    </mat-card>
+    <mat-card class="stat-card teal">
+      <mat-card-content class="stat-content">
+        <div class="stat-label"><mat-icon class="stat-icon">public</mat-icon>Published</div>
+        <div class="stat-value">{{ dashboard()!.totalPublished }}</div>
+        <div class="stat-sub">Live to external channels</div>
+      </mat-card-content>
+    </mat-card>
+    <mat-card class="stat-card warning">
+      <mat-card-content class="stat-content">
+        <div class="stat-label"><mat-icon class="stat-icon">pending_actions</mat-icon>Under Review</div>
+        <div class="stat-value">{{ dashboard()!.totalUnderReview }}</div>
+        <div class="stat-sub">Awaiting editor approval</div>
+      </mat-card-content>
+    </mat-card>
+    <mat-card class="stat-card purple">
+      <mat-card-content class="stat-content">
+        <div class="stat-label"><mat-icon class="stat-icon">edit_note</mat-icon>Drafts</div>
+        <div class="stat-value">{{ dashboard()!.totalDraft }}</div>
+        <div class="stat-sub">Currently being authored</div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <div class="content-grid cols-2">
+    <!-- Pipeline Progress -->
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>Content Pipeline Velocity</mat-card-title>
+        <mat-card-subtitle>Percentage of total content by status</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content class="chart-content">
+        @for (bar of chartData(); track bar.label) {
+          <div class="bar-row">
+            <span class="bar-label">{{ bar.label }}</span>
+            <div class="bar-wrapper">
+              <mat-progress-bar mode="determinate" [value]="bar.pct" [style.--bar-color]="bar.color" class="bar"></mat-progress-bar>
+            </div>
+            <span class="bar-value">{{ bar.pct | number:'1.0-0' }}%</span>
+          </div>
+        }
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Breakdown Details -->
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>Pipeline Breakdown</mat-card-title>
+        <mat-card-subtitle>Absolute numbers by status</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content class="breakdown-content">
+        @for (bar of chartData(); track bar.label) {
+          <div class="breakdown-row">
+            <span class="breakdown-label">
+              <span class="dot" [style.background]="bar.color"></span>
+              {{ bar.label }}
+            </span>
+            <span class="breakdown-value">
+              <span class="value-num">{{ bar.value }}</span>
+              <span class="value-text">items</span>
+            </span>
+          </div>
+        }
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <!-- Recent Content -->
+  <mat-card class="mt-20">
+    <mat-card-header>
+      <mat-card-title>Recent Activity</mat-card-title>
+      <mat-card-subtitle>Latest content created in the system</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content class="recent-content">
+      @if (recentContent().length === 0) {
+        <div class="empty-state">
+          <mat-icon>history</mat-icon>
+          <p>No content activity yet</p>
+        </div>
+      } @else {
+        <div class="recent-list">
+          @for (item of recentContent(); track item.id) {
+            <div class="recent-row">
+              <div class="recent-icon-wrap">
+                <mat-icon class="recent-icon">
+                  {{ item.contentType === 'VIDEO' ? 'videocam' : item.contentType === 'PODCAST' ? 'mic' : item.contentType === 'IMAGE' ? 'image' : 'article' }}
+                </mat-icon>
+              </div>
+              <div class="recent-info">
+                <div class="recent-title">{{ item.title }}</div>
+                <div class="recent-meta">Created by <strong>{{ item.createdByName }}</strong> &middot; {{ item.createdAt | date:'medium' }}</div>
+              </div>
+              <span class="status-badge {{ item.status.toLowerCase().replace('_','-') }}">
+                {{ item.status.replace('_',' ') }}
+              </span>
+            </div>
+          }
+        </div>
+      }
+    </mat-card-content>
+  </mat-card>
+
+}

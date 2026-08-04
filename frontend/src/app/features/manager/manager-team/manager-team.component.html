@@ -1,0 +1,158 @@
+<div class="page-header">
+  <h1>User Management</h1>
+  <p>Manage your team — assign roles, activate or deactivate accounts, and remove users</p>
+</div>
+
+<!-- Role summary cards -->
+<div class="stats-row cols-4">
+  <mat-card class="stat-card accent">
+    <mat-card-content class="stat-content">
+      <div class="stat-label"><mat-icon class="stat-icon">edit</mat-icon>Creators</div>
+      <div class="stat-value">{{ roleCounts()['CONTENT_CREATOR'] ?? 0 }}</div>
+    </mat-card-content>
+  </mat-card>
+  <mat-card class="stat-card warning">
+    <mat-card-content class="stat-content">
+      <div class="stat-label"><mat-icon class="stat-icon">rate_review</mat-icon>Editors</div>
+      <div class="stat-value">{{ roleCounts()['EDITOR'] ?? 0 }}</div>
+    </mat-card-content>
+  </mat-card>
+  <mat-card class="stat-card teal">
+    <mat-card-content class="stat-content">
+      <div class="stat-label"><mat-icon class="stat-icon">campaign</mat-icon>Marketing</div>
+      <div class="stat-value">{{ roleCounts()['MARKETING'] ?? 0 }}</div>
+    </mat-card-content>
+  </mat-card>
+  <mat-card class="stat-card purple">
+    <mat-card-content class="stat-content">
+      <div class="stat-label"><mat-icon class="stat-icon">shield</mat-icon>IT Support</div>
+      <div class="stat-value">{{ roleCounts()['IT_SUPPORT'] ?? 0 }}</div>
+    </mat-card-content>
+  </mat-card>
+</div>
+
+<!-- Search bar -->
+<div class="search-bar-wrap">
+  <mat-form-field appearance="outline" class="search-field">
+    <mat-label>Search users...</mat-label>
+    <mat-icon matPrefix class="search-icon">search</mat-icon>
+    <input matInput [(ngModel)]="filterValue" (input)="applyFilter(filterValue)" placeholder="Name, email or role"/>
+    @if (filterValue) {
+      <button mat-icon-button matSuffix (click)="applyFilter(''); filterValue = ''">
+        <mat-icon>close</mat-icon>
+      </button>
+    }
+  </mat-form-field>
+</div>
+
+<!-- Users table -->
+<div class="table-card">
+  @if (loading()) {
+    <div class="spinner-wrap"><mat-spinner diameter="40"></mat-spinner></div>
+  } @else {
+    <mat-table [dataSource]="dataSource" matSort>
+
+      <!-- User column -->
+      <ng-container matColumnDef="username">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>User</mat-header-cell>
+        <mat-cell *matCellDef="let row">
+          <div class="user-cell">
+            <div class="avatar-sm" [class.self-avatar]="isSelf(row)">{{ row.username.slice(0,2).toUpperCase() }}</div>
+            <div>
+              <div class="cell-title">{{ row.username }} @if(isSelf(row)){<span class="self-tag">You</span>}</div>
+              <div class="cell-sub">{{ row.email }}</div>
+            </div>
+          </div>
+        </mat-cell>
+      </ng-container>
+
+      <!-- Role column — inline dropdown -->
+      <ng-container matColumnDef="role">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Role</mat-header-cell>
+        <mat-cell *matCellDef="let row">
+          <div class="role-cell">
+            <mat-select
+              [value]="row.role"
+              (selectionChange)="onRoleChange(row, $event.value)"
+              [disabled]="row.updatingRole || isSelf(row)"
+              class="role-select"
+            >
+              @for (r of roleOptions; track r) {
+                <mat-option [value]="r">{{ roleLabels[r] }}</mat-option>
+              }
+            </mat-select>
+            @if (row.updatingRole) {
+              <mat-spinner diameter="16" class="inline-spinner"></mat-spinner>
+            }
+          </div>
+        </mat-cell>
+      </ng-container>
+
+      <!-- Content count -->
+      <ng-container matColumnDef="contentCount">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Content</mat-header-cell>
+        <mat-cell *matCellDef="let row">
+          <span class="count-badge">{{ row.contentCount }}</span>
+        </mat-cell>
+      </ng-container>
+
+      <!-- Status toggle -->
+      <ng-container matColumnDef="status">
+        <mat-header-cell *matHeaderCellDef>Status</mat-header-cell>
+        <mat-cell *matCellDef="let row">
+          <div class="status-cell">
+            <mat-slide-toggle
+              [checked]="row.isActive"
+              (change)="toggleStatus(row)"
+              [disabled]="row.togglingStatus || isSelf(row)"
+              color="primary"
+            ></mat-slide-toggle>
+            <span class="status-label" [class.active]="row.isActive" [class.inactive]="!row.isActive">
+              {{ row.isActive ? 'Active' : 'Inactive' }}
+            </span>
+          </div>
+        </mat-cell>
+      </ng-container>
+
+      <!-- Joined date -->
+      <ng-container matColumnDef="joined">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Joined</mat-header-cell>
+        <mat-cell *matCellDef="let row" class="muted-cell">{{ row.createdAt | date:'dd MMM yyyy' }}</mat-cell>
+      </ng-container>
+
+      <!-- Actions -->
+      <ng-container matColumnDef="actions">
+        <mat-header-cell *matHeaderCellDef></mat-header-cell>
+        <mat-cell *matCellDef="let row">
+          @if (!isSelf(row)) {
+            <button
+              mat-icon-button
+              class="delete-btn"
+              [disabled]="row.deleting"
+              (click)="deleteUser(row)"
+              matTooltip="Delete user permanently"
+            >
+              @if (row.deleting) {
+                <mat-spinner diameter="18"></mat-spinner>
+              } @else {
+                <mat-icon>delete_outline</mat-icon>
+              }
+            </button>
+          }
+        </mat-cell>
+      </ng-container>
+
+      <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: displayedColumns;" [class.inactive-row]="!row.isActive"></mat-row>
+    </mat-table>
+
+    @if (dataSource.filteredData.length === 0) {
+      <div class="empty-state">
+        <mat-icon>person_search</mat-icon>
+        <p>No users match your search</p>
+      </div>
+    }
+
+    <mat-paginator [pageSizeOptions]="[10, 25, 50]" showFirstLastButtons></mat-paginator>
+  }
+</div>

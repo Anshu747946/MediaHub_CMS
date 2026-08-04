@@ -1,0 +1,15 @@
+.stat-content { padding: 18px; }
+.stat-icon { font-size: 14px; height: 14px; width: 14px; margin-right: 4px; vertical-align: middle; }
+.spinner-wrap { display: flex; justify-content: center; padding: 48px; }
+.empty-content { text-align: center; padding: 48px; }
+.empty-icon { font-size: 40px; height: 40px; width: 40px; color: var(--text-muted); display: block; margin: 0 auto 8px; }
+.empty-title { color: var(--text-secondary); font-size: 14px; }
+.empty-sub { color: var(--text-muted); font-size: 13px; margin-top: 4px; }
+.workflow-card { margin-bottom: 12px; }
+.workflow-content { padding: 18px; }
+.workflow-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
+.workflow-title { font-size: 14px; font-weight: 600; color: var(--text-primary); }
+.workflow-meta { font-size: 12px; color: var(--text-muted); margin-top: 3px; }
+.divider { margin-bottom: 14px; }
+.action-btns { display: flex; gap: 8px; flex-wrap: wrap; }
+.btn-icon { font-size: 16px; height: 16px; width: 16px; }

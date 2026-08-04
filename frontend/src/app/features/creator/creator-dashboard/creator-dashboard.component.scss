@@ -1,0 +1,21 @@
+.stat-content { padding: 18px; }
+.stat-icon { font-size: 14px; height: 14px; width: 14px; margin-right: 4px; vertical-align: middle; }
+.toolbar {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 16px; border-bottom: 1px solid var(--card-border);
+}
+.toolbar-actions { display: flex; gap: 10px; align-items: center; }
+.filter-field { width: 160px; }
+.spinner-wrap { display: flex; justify-content: center; padding: 48px; }
+.cell-title { font-weight: 500; color: var(--text-primary); font-size: 13px; }
+.cell-sub { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+.muted-cell { color: var(--text-muted); font-size: 12px; }
+.action-btns { display: flex; gap: 6px; }
+.btn-compact { height: 30px; font-size: 12px; line-height: 30px; }
+.btn-icon { font-size: 14px; height: 14px; width: 14px; }
+.delete-btn { color: var(--danger); }
+.delete-icon { font-size: 18px; }
+.empty-cell { text-align: center; padding: 48px; }
+.empty-icon { font-size: 40px; height: 40px; width: 40px; color: var(--text-muted); display: block; margin: 0 auto 8px; }
+.empty-title { color: var(--text-secondary); font-size: 14px; }
+.empty-sub { color: var(--text-muted); font-size: 13px; margin-top: 4px; }

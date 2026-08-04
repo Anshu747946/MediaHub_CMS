@@ -1,0 +1,69 @@
+<div class="page-header">
+  <h1>Review queue</h1>
+  <p>Approve, reject, or request changes on submitted content</p>
+</div>
+
+<div class="stats-row cols-3">
+  <mat-card class="stat-card warning">
+    <mat-card-content class="stat-content">
+      <div class="stat-label"><mat-icon class="stat-icon">pending_actions</mat-icon>Pending</div>
+      <div class="stat-value">{{ workflows().length }}</div>
+      <div class="stat-sub">Needs your attention</div>
+    </mat-card-content>
+  </mat-card>
+  <mat-card class="stat-card success">
+    <mat-card-content class="stat-content">
+      <div class="stat-label"><mat-icon class="stat-icon">check_circle</mat-icon>Approved</div>
+      <div class="stat-value">{{ sessionApproved() }}</div>
+      <div class="stat-sub">This session</div>
+    </mat-card-content>
+  </mat-card>
+  <mat-card class="stat-card blue">
+    <mat-card-content class="stat-content">
+      <div class="stat-label"><mat-icon class="stat-icon">history</mat-icon>Total reviewed</div>
+      <div class="stat-value">{{ sessionTotal() }}</div>
+      <div class="stat-sub">This session</div>
+    </mat-card-content>
+  </mat-card>
+</div>
+
+@if (loading()) {
+  <div class="spinner-wrap"><mat-spinner diameter="40"></mat-spinner></div>
+} @else if (workflows().length === 0) {
+  <mat-card>
+    <mat-card-content class="empty-content">
+      <mat-icon class="empty-icon">task_alt</mat-icon>
+      <div class="empty-title">All caught up!</div>
+      <div class="empty-sub">No content is waiting for your review</div>
+    </mat-card-content>
+  </mat-card>
+} @else {
+  @for (wf of workflows(); track wf.id) {
+    <mat-card class="workflow-card">
+      <mat-card-content class="workflow-content">
+        <div class="workflow-header">
+          <div>
+            <div class="workflow-title">{{ wf.contentTitle }}</div>
+            <div class="workflow-meta">Stage {{ wf.stageOrder }} &middot; Submitted {{ wf.createdAt | date:'dd MMM, HH:mm' }}</div>
+          </div>
+          <span class="status-badge review">Pending review</span>
+        </div>
+        <mat-divider class="divider"></mat-divider>
+        <div class="action-btns">
+          <button mat-stroked-button (click)="previewContent(wf)">
+            <mat-icon class="btn-icon">visibility</mat-icon> View content
+          </button>
+          <button mat-raised-button color="primary" (click)="openAction(wf, 'APPROVED')">
+            <mat-icon class="btn-icon">check</mat-icon> Approve
+          </button>
+          <button mat-stroked-button (click)="openAction(wf, 'CHANGES_REQUESTED')">
+            <mat-icon class="btn-icon">undo</mat-icon> Request changes
+          </button>
+          <button mat-stroked-button color="warn" (click)="openAction(wf, 'REJECTED')">
+            <mat-icon class="btn-icon">close</mat-icon> Reject
+          </button>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  }
+}

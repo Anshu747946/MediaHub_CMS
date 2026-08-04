@@ -1,0 +1,134 @@
+<div class="page-header">
+  <h1>My content</h1>
+  <p>Create, manage and track your content through the approval pipeline</p>
+</div>
+
+<div class="stats-row cols-4">
+  <mat-card class="stat-card accent">
+    <mat-card-content class="stat-content">
+      <div class="stat-label"><mat-icon class="stat-icon">layers</mat-icon>Total</div>
+      <div class="stat-value">{{ stats().total }}</div>
+      <div class="stat-sub">All content items</div>
+    </mat-card-content>
+  </mat-card>
+  <mat-card class="stat-card purple">
+    <mat-card-content class="stat-content">
+      <div class="stat-label"><mat-icon class="stat-icon">edit_note</mat-icon>Drafts</div>
+      <div class="stat-value">{{ stats().draft }}</div>
+      <div class="stat-sub">Not submitted yet</div>
+    </mat-card-content>
+  </mat-card>
+  <mat-card class="stat-card warning">
+    <mat-card-content class="stat-content">
+      <div class="stat-label"><mat-icon class="stat-icon">pending</mat-icon>Under review</div>
+      <div class="stat-value">{{ stats().review }}</div>
+      <div class="stat-sub">Awaiting editor</div>
+    </mat-card-content>
+  </mat-card>
+  <mat-card class="stat-card success">
+    <mat-card-content class="stat-content">
+      <div class="stat-label"><mat-icon class="stat-icon">public</mat-icon>Published</div>
+      <div class="stat-value">{{ stats().published }}</div>
+      <div class="stat-sub">Live on channels</div>
+    </mat-card-content>
+  </mat-card>
+</div>
+
+<div class="table-card">
+  <div class="toolbar">
+    <div>
+      <div class="section-title">Content library</div>
+      <div class="section-sub">{{ dataSource.data.length }} items total</div>
+    </div>
+    <div class="toolbar-actions">
+      <mat-form-field appearance="outline" class="filter-field" subscriptSizing="dynamic">
+        <mat-label>Filter by status</mat-label>
+        <mat-select (selectionChange)="filterStatus($event.value)">
+          <mat-option value="">All</mat-option>
+          <mat-option value="DRAFT">Draft</mat-option>
+          <mat-option value="UNDER_REVIEW">Under review</mat-option>
+          <mat-option value="APPROVED">Approved</mat-option>
+          <mat-option value="REJECTED">Rejected</mat-option>
+          <mat-option value="PUBLISHED">Published</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <button mat-raised-button color="primary" (click)="openCreateDialog()">
+        <mat-icon>add</mat-icon> New content
+      </button>
+    </div>
+  </div>
+
+  @if (loading()) {
+    <div class="spinner-wrap"><mat-spinner diameter="40"></mat-spinner></div>
+  } @else {
+    <mat-table [dataSource]="dataSource" matSort>
+
+      <ng-container matColumnDef="title">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Title</mat-header-cell>
+        <mat-cell *matCellDef="let row">
+          <div>
+            <div class="cell-title">{{ row.title }}</div>
+            <div class="cell-sub">{{ row.contentType }}</div>
+          </div>
+        </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="status">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Status</mat-header-cell>
+        <mat-cell *matCellDef="let row">
+          <span class="status-badge {{ row.status.toLowerCase().replace('_','-') }}">
+            {{ row.status.replace('_', ' ') }}
+          </span>
+        </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="createdAt">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Created</mat-header-cell>
+        <mat-cell *matCellDef="let row" class="muted-cell">{{ row.createdAt | date:'dd MMM yyyy' }}</mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="updatedAt">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Last updated</mat-header-cell>
+        <mat-cell *matCellDef="let row" class="muted-cell">{{ row.updatedAt | date:'dd MMM, HH:mm' }}</mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="actions">
+        <mat-header-cell *matHeaderCellDef>Actions</mat-header-cell>
+        <mat-cell *matCellDef="let row">
+          <div class="action-btns">
+            @if (row.status === 'DRAFT' || row.status === 'REJECTED') {
+              <button mat-stroked-button class="btn-compact" (click)="openEditDialog(row)">
+                <mat-icon class="btn-icon">edit</mat-icon> Edit
+              </button>
+              <button mat-raised-button color="primary" class="btn-compact" (click)="submitForReview(row)">
+                <mat-icon class="btn-icon">send</mat-icon> Submit
+              </button>
+            } @else {
+              <button mat-stroked-button class="btn-compact" (click)="openViewDialog(row)">
+                <mat-icon class="btn-icon">visibility</mat-icon> View
+              </button>
+            }
+            @if (row.status === 'DRAFT') {
+              <button mat-icon-button class="delete-btn" matTooltip="Delete draft" (click)="deleteContent(row)">
+                <mat-icon class="delete-icon">delete_outline</mat-icon>
+              </button>
+            }
+          </div>
+        </mat-cell>
+      </ng-container>
+
+      <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+
+      <tr class="mat-row" *matNoDataRow>
+        <td class="mat-cell empty-cell" [attr.colspan]="displayedColumns.length">
+          <mat-icon class="empty-icon">inbox</mat-icon>
+          <div class="empty-title">No content yet</div>
+          <div class="empty-sub">Create your first draft to get started</div>
+        </td>
+      </tr>
+    </mat-table>
+
+    <mat-paginator [pageSizeOptions]="[10, 25, 50]" showFirstLastButtons></mat-paginator>
+  }
+</div>

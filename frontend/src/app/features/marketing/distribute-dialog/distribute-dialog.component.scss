@@ -1,0 +1,17 @@
+.dialog-content { min-width: 440px; }
+.content-title-line { font-size: 13px; color: var(--text-secondary); margin-bottom: 6px; }
+.content-title-line strong { color: var(--text-primary); }
+.hint-text { font-size: 12px; color: var(--text-muted); margin-bottom: 14px; }
+.spinner-wrap { display: flex; justify-content: center; padding: 24px; }
+.channel-list { display: flex; flex-direction: column; gap: 4px; }
+.channel-row {
+  display: flex; align-items: center; gap: 10px; padding: 10px 8px;
+  border-radius: 8px; cursor: pointer; transition: background .12s;
+}
+.channel-row:hover { background: rgba(255,255,255,.04); }
+.check-icon { color: var(--text-muted); }
+.check-icon.checked { color: var(--accent); }
+.channel-name { font-size: 13px; font-weight: 500; color: var(--text-primary); }
+.channel-type { font-size: 11px; color: var(--text-muted); }
+.error-line { color: var(--danger); font-size: 12px; margin-top: 10px; }
+.dialog-actions { padding: 12px 24px 20px; gap: 8px; }

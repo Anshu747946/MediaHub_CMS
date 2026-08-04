@@ -1,0 +1,26 @@
+<h2 mat-dialog-title>
+  @if (data.decision === 'APPROVED') { Approve content }
+  @else if (data.decision === 'REJECTED') { Reject content }
+  @else { Request changes }
+</h2>
+<mat-dialog-content class="dialog-content">
+  <p class="content-title-line">
+    <strong>{{ data.workflow.contentTitle }}</strong>
+  </p>
+  <mat-form-field appearance="outline">
+    <mat-label>{{ data.decision === 'APPROVED' ? 'Comments (optional)' : 'Comments (required)' }}</mat-label>
+    <textarea matInput [(ngModel)]="comments" rows="4"
+      placeholder="Explain your decision to the content creator..."></textarea>
+  </mat-form-field>
+  @if (error()) {
+    <div class="error-line">{{ error() }}</div>
+  }
+</mat-dialog-content>
+<mat-dialog-actions align="end" class="dialog-actions">
+  <button mat-button mat-dialog-close>Cancel</button>
+  <button mat-raised-button [color]="data.decision === 'APPROVED' ? 'primary' : 'warn'" (click)="confirm()">
+    @if (data.decision === 'APPROVED') { Confirm approval }
+    @else if (data.decision === 'REJECTED') { Confirm rejection }
+    @else { Send back for changes }
+  </button>
+</mat-dialog-actions>

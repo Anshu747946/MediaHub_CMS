@@ -1,0 +1,89 @@
+<div class="page-header">
+  <h1>Distribution</h1>
+  <p>Push approved content to your connected channels</p>
+</div>
+
+<div class="stats-row cols-4">
+  <mat-card class="stat-card success">
+    <mat-card-content class="stat-content">
+      <div class="stat-label"><mat-icon class="stat-icon">check_circle</mat-icon>Ready</div>
+      <div class="stat-value">{{ approvedContent().length }}</div>
+      <div class="stat-sub">Approved content</div>
+    </mat-card-content>
+  </mat-card>
+  <mat-card class="stat-card teal">
+    <mat-card-content class="stat-content">
+      <div class="stat-label"><mat-icon class="stat-icon">publish</mat-icon>Published</div>
+      <div class="stat-value">{{ publishedCount() }}</div>
+      <div class="stat-sub">Distributed content</div>
+    </mat-card-content>
+  </mat-card>
+  <mat-card class="stat-card accent">
+    <mat-card-content class="stat-content">
+      <div class="stat-label"><mat-icon class="stat-icon">hub</mat-icon>Channels</div>
+      <div class="stat-value">{{ channels().length }}</div>
+      <div class="stat-sub">Active integrations</div>
+    </mat-card-content>
+  </mat-card>
+  <mat-card class="stat-card warning">
+    <mat-card-content class="stat-content">
+      <div class="stat-label"><mat-icon class="stat-icon">schedule</mat-icon>Queue</div>
+      <div class="stat-value">{{ approvedContent().length }}</div>
+      <div class="stat-sub">Pending distribution</div>
+    </mat-card-content>
+  </mat-card>
+</div>
+
+<div class="content-grid cols-2-1">
+  <div class="table-card">
+    <div class="card-header-row">
+      <div class="section-title">Approved content</div>
+      <div class="section-sub">Ready for distribution</div>
+    </div>
+    @if (loading()) {
+      <div class="spinner-wrap"><mat-spinner diameter="36"></mat-spinner></div>
+    } @else if (approvedContent().length === 0) {
+      <div class="empty-text">No approved content waiting</div>
+    } @else {
+      @for (item of approvedContent(); track item.id) {
+        <div class="content-row">
+          <mat-icon class="content-icon">
+            {{ item.contentType === 'VIDEO' ? 'videocam' : item.contentType === 'PODCAST' ? 'mic' : item.contentType === 'IMAGE' ? 'image' : 'article' }}
+          </mat-icon>
+          <div class="content-info">
+            <div class="content-title">{{ item.title }}</div>
+            <div class="content-meta">by {{ item.createdByName }}</div>
+          </div>
+          <button mat-raised-button color="primary" class="distribute-btn"
+            [disabled]="distributingId() === item.id" (click)="openDistribute(item)">
+            @if (distributingId() === item.id) {
+              <ng-container><mat-spinner diameter="16" class="btn-spinner"></mat-spinner> Sending</ng-container>
+            } @else {
+              <ng-container><mat-icon class="btn-icon">send</mat-icon> Distribute</ng-container>
+            }
+          </button>
+        </div>
+      }
+    }
+  </div>
+
+  <mat-card>
+    <mat-card-header><mat-card-title>Channels</mat-card-title></mat-card-header>
+    <mat-card-content class="channels-content">
+      @for (ch of channels(); track ch.id) {
+        <div class="channel-row">
+          <div class="channel-icon-wrap">
+            <mat-icon class="channel-icon">
+              {{ ch.platformType === 'BLOG' ? 'rss_feed' : ch.platformType === 'EMAIL_NEWSLETTER' ? 'email' : 'share' }}
+            </mat-icon>
+          </div>
+          <div class="channel-text">
+            <div class="channel-name">{{ ch.name }}</div>
+            <div class="channel-type">{{ ch.platformType }}</div>
+          </div>
+          <span class="status-badge approved">Active</span>
+        </div>
+      }
+    </mat-card-content>
+  </mat-card>
+</div>

@@ -1,0 +1,58 @@
+<div class="auth-wrapper">
+  <div class="auth-box">
+    <mat-card class="auth-card">
+      <div class="logo-block">
+        <div class="logo-icon">M</div>
+        <h1>Create account</h1>
+        <p>Join MediaHub CMS</p>
+      </div>
+
+      @if (error()) {
+        <div class="error-banner">{{ error() }}</div>
+      }
+
+      <form [formGroup]="form" (ngSubmit)="onSubmit()">
+        <mat-form-field appearance="outline" class="field">
+          <mat-label>Username</mat-label>
+          <input matInput formControlName="username" placeholder="your_username"/>
+          @if (form.get('username')?.invalid && form.get('username')?.touched) {
+            <mat-error>Username required (min 3 chars)</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="field">
+          <mat-label>Email address</mat-label>
+          <input matInput formControlName="email" type="email"/>
+          @if (form.get('email')?.invalid && form.get('email')?.touched) {
+            <mat-error>Valid email required</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="field field-last">
+          <mat-label>Password</mat-label>
+          <input matInput formControlName="password" [type]="showPw() ? 'text' : 'password'"/>
+          <button mat-icon-button matSuffix type="button" (click)="showPw.set(!showPw())">
+            <mat-icon class="suffix-icon">{{ showPw() ? 'visibility_off' : 'visibility' }}</mat-icon>
+          </button>
+          @if (form.get('password')?.invalid && form.get('password')?.touched) {
+            <mat-error>8+ chars, uppercase, lowercase, digit, special char</mat-error>
+          }
+        </mat-form-field>
+
+        <div class="role-info-banner">
+          <mat-icon class="role-info-icon">info_outline</mat-icon>
+          <span>All new accounts are registered as <strong>Content Creator</strong>. A Manager can upgrade your role after you join.</span>
+        </div>
+
+        <button mat-raised-button color="primary" type="submit" [disabled]="loading()" class="submit-btn">
+          @if (loading()) { <mat-spinner diameter="20" class="btn-spinner"></mat-spinner> }
+          @else { Create account }
+        </button>
+      </form>
+
+      <p class="footer-text">
+        Have an account? <a routerLink="/login" class="footer-link">Sign in</a>
+      </p>
+    </mat-card>
+  </div>
+</div>

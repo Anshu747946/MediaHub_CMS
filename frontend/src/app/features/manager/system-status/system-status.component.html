@@ -1,0 +1,68 @@
+<div class="page-header">
+  <h1>System status</h1>
+  <p>API health and third-party channel integrations</p>
+</div>
+
+<div class="stats-row cols-3">
+  <mat-card class="stat-card" [class.success]="apiOnline() === true" [class.danger]="apiOnline() === false">
+    <mat-card-content class="stat-content">
+      <div class="stat-label">
+        <mat-icon class="stat-icon">{{ apiOnline() ? 'check_circle' : 'error_outline' }}</mat-icon>
+        API status
+      </div>
+      <div class="stat-value">{{ apiOnline() ? 'Online' : 'Offline' }}</div>
+      <div class="stat-sub">Last checked {{ checkedAt() | date:'HH:mm:ss' }}</div>
+    </mat-card-content>
+  </mat-card>
+  <mat-card class="stat-card accent">
+    <mat-card-content class="stat-content">
+      <div class="stat-label"><mat-icon class="stat-icon">hub</mat-icon>Channels connected</div>
+      <div class="stat-value">{{ channels().length }}</div>
+      <div class="stat-sub">Third-party integrations</div>
+    </mat-card-content>
+  </mat-card>
+  <mat-card class="stat-card teal">
+    <mat-card-content class="stat-content">
+      <div class="stat-label"><mat-icon class="stat-icon">lock</mat-icon>Auth method</div>
+      <div class="stat-value stat-value-sm">JWT</div>
+      <div class="stat-sub">Stateless, signed tokens</div>
+    </mat-card-content>
+  </mat-card>
+</div>
+
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>Channel integrations</mat-card-title>
+  </mat-card-header>
+  <mat-card-content class="channels-content">
+    @if (loading()) {
+      <div class="spinner-wrap"><mat-spinner diameter="32"></mat-spinner></div>
+    } @else {
+      @for (ch of channels(); track ch.id) {
+        <div class="channel-row">
+          <mat-icon class="channel-icon">
+            {{ ch.platformType === 'BLOG' ? 'rss_feed' : ch.platformType === 'EMAIL_NEWSLETTER' ? 'email' : 'share' }}
+          </mat-icon>
+          <div class="channel-info">
+            <div class="channel-name">{{ ch.name }}</div>
+            <div class="channel-endpoint">{{ ch.apiEndpoint }}</div>
+          </div>
+          <div class="channel-actions">
+            <span class="status-label" [class.active]="ch.isActive" [class.inactive]="!ch.isActive">
+              {{ ch.isActive ? 'Active' : 'Inactive' }}
+            </span>
+            <mat-slide-toggle
+              [checked]="ch.isActive"
+              color="primary"
+              (change)="toggleStatus(ch, $event.checked)">
+            </mat-slide-toggle>
+          </div>
+        </div>
+      }
+    }
+  </mat-card-content>
+</mat-card>
+
+<button mat-stroked-button class="refresh-btn" (click)="load()">
+  <mat-icon class="btn-icon">refresh</mat-icon> Re-check status
+</button>

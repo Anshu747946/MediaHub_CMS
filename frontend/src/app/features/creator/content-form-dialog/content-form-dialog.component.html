@@ -1,0 +1,49 @@
+<h2 mat-dialog-title>{{ data.viewOnly ? 'View content' : (data.content ? 'Edit content' : 'Create new content') }}</h2>
+
+<mat-dialog-content class="dialog-content">
+  <form [formGroup]="form">
+    <mat-form-field appearance="outline" class="field">
+      <mat-label>Title *</mat-label>
+      <input matInput formControlName="title" placeholder="Enter a descriptive title..."/>
+      @if (form.get('title')?.invalid && form.get('title')?.touched) {
+        <mat-error>Title is required (max 500 chars)</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="field">
+      <mat-label>Content type *</mat-label>
+      <mat-select formControlName="contentType">
+        <mat-option value="ARTICLE"><mat-icon class="option-icon">article</mat-icon> Article</mat-option>
+        <mat-option value="VIDEO"><mat-icon class="option-icon">videocam</mat-icon> Video</mat-option>
+        <mat-option value="PODCAST"><mat-icon class="option-icon">mic</mat-icon> Podcast</mat-option>
+        <mat-option value="IMAGE"><mat-icon class="option-icon">image</mat-icon> Image</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="field">
+      <mat-label>Description</mat-label>
+      <input matInput formControlName="description" placeholder="Short summary of the content..."/>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="field">
+      <mat-label>Body</mat-label>
+      <textarea matInput formControlName="body" rows="5"
+        placeholder="Write your full content here (HTML or Markdown)..."></textarea>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="field">
+      <mat-label>Media URL</mat-label>
+      <input matInput formControlName="mediaUrl" placeholder="https://..."/>
+      <mat-icon matSuffix class="suffix-icon">link</mat-icon>
+    </mat-form-field>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end" class="dialog-actions">
+  <button mat-button mat-dialog-close>{{ data.viewOnly ? 'Close' : 'Cancel' }}</button>
+  @if (!data.viewOnly) {
+    <button mat-raised-button color="primary" (click)="submit()" [disabled]="form.invalid">
+      {{ data.content ? 'Update' : 'Create draft' }}
+    </button>
+  }
+</mat-dialog-actions>

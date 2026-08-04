@@ -1,0 +1,35 @@
+<h2 mat-dialog-title>Distribute content</h2>
+
+<mat-dialog-content class="dialog-content">
+  <p class="content-title-line"><strong>{{ data.content.title }}</strong></p>
+  <p class="hint-text">Select which channels to publish this content to:</p>
+
+  @if (loading()) {
+    <div class="spinner-wrap"><mat-spinner diameter="28"></mat-spinner></div>
+  } @else {
+    <div class="channel-list">
+      @for (ch of channels(); track ch.id) {
+        <div class="channel-row" (click)="toggle(ch.id)">
+          <mat-icon class="check-icon" [class.checked]="isSelected(ch.id)">
+            {{ isSelected(ch.id) ? 'check_box' : 'check_box_outline_blank' }}
+          </mat-icon>
+          <div class="channel-info">
+            <div class="channel-name">{{ ch.name }}</div>
+            <div class="channel-type">{{ ch.platformType }}</div>
+          </div>
+        </div>
+      }
+    </div>
+  }
+
+  @if (selected().size === 0 && !loading()) {
+    <div class="error-line">Select at least one channel</div>
+  }
+</mat-dialog-content>
+
+<mat-dialog-actions align="end" class="dialog-actions">
+  <button mat-button mat-dialog-close>Cancel</button>
+  <button mat-raised-button color="primary" (click)="confirm()" [disabled]="selected().size === 0">
+    Distribute to {{ selected().size }} channel{{ selected().size === 1 ? '' : 's' }}
+  </button>
+</mat-dialog-actions>

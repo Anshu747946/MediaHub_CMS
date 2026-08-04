@@ -1,0 +1,46 @@
+<h2 mat-dialog-title>Content preview</h2>
+
+<mat-dialog-content class="dialog-content">
+  @if (loading()) {
+    <div class="spinner-wrap"><mat-spinner diameter="32"></mat-spinner></div>
+  } @else if (content()) {
+    <div class="meta-row">
+      <span class="status-badge {{ content()!.status.toLowerCase().replace('_','-') }}">
+        {{ content()!.status.replace('_',' ') }}
+      </span>
+      <span class="meta-type">{{ content()!.contentType }}</span>
+      <span class="meta-author">by {{ content()!.createdByName }}</span>
+    </div>
+
+    <h3 class="preview-title">{{ content()!.title }}</h3>
+
+    @if (content()!.description) {
+      <p class="preview-description">{{ content()!.description }}</p>
+    }
+
+    <mat-divider class="divider"></mat-divider>
+
+    <div class="preview-body">
+      @if (content()!.body) {
+        {{ content()!.body }}
+      } @else {
+        <span class="no-body">No body content provided.</span>
+      }
+    </div>
+
+    @if (content()!.mediaUrl) {
+      <div class="media-row">
+        <mat-icon class="media-icon">link</mat-icon>
+        <a [href]="content()!.mediaUrl" target="_blank" rel="noopener" class="media-link">
+          {{ content()!.mediaUrl }}
+        </a>
+      </div>
+    }
+  } @else {
+    <div class="error-line">Could not load content.</div>
+  }
+</mat-dialog-content>
+
+<mat-dialog-actions align="end" class="dialog-actions">
+  <button mat-button mat-dialog-close>Close</button>
+</mat-dialog-actions>

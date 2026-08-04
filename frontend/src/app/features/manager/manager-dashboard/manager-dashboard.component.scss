@@ -1,0 +1,76 @@
+/* ── Base ──────────────────────────────────────────────────── */
+.spinner-wrap { display: flex; justify-content: center; padding: 48px; }
+.mt-20 { margin-top: 24px; }
+
+/* ── Stat Cards ────────────────────────────────────────────── */
+.stats-row { margin-bottom: 24px; }
+.cols-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+.stat-content { padding: 24px 20px; }
+.stat-label { 
+  display: flex; align-items: center; gap: 8px;
+  font-size: 13px; font-weight: 600; color: var(--text-secondary);
+  text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px;
+}
+.stat-icon { font-size: 18px; height: 18px; width: 18px; opacity: 0.8; }
+.stat-value { font-size: 32px; font-weight: 700; color: var(--text-primary); margin-bottom: 4px; }
+.stat-sub { font-size: 12px; color: var(--text-muted); }
+
+.stat-card.purple { border-bottom: 3px solid #8b5cf6; }
+.stat-card.purple .stat-icon { color: #8b5cf6; }
+
+/* ── Content Grid ──────────────────────────────────────────── */
+.cols-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+mat-card-header { padding: 20px 24px 0; }
+mat-card-title { font-size: 16px !important; font-weight: 600; color: var(--text-primary); }
+mat-card-subtitle { font-size: 13px; color: var(--text-muted); margin-top: 4px; }
+
+/* ── Charts & Bars ─────────────────────────────────────────── */
+.chart-content { padding: 20px 24px 24px; }
+.bar-row { display: flex; align-items: center; gap: 16px; margin-bottom: 18px; }
+.bar-row:last-child { margin-bottom: 0; }
+.bar-label { width: 110px; font-size: 13px; font-weight: 500; color: var(--text-secondary); text-align: right; flex-shrink: 0; }
+.bar-wrapper { flex: 1; border-radius: 6px; overflow: hidden; background: rgba(255,255,255,0.04); }
+.bar { height: 8px; border-radius: 4px; }
+.bar-value { width: 40px; font-size: 13px; font-weight: 600; color: var(--text-primary); flex-shrink: 0; text-align: right; }
+
+::ng-deep mat-progress-bar .mdc-linear-progress__bar-inner { border-color: var(--bar-color, var(--accent)) !important; }
+
+/* ── Pipeline Breakdown ────────────────────────────────────── */
+.breakdown-content { padding: 12px 24px 24px; }
+.breakdown-row { 
+  display: flex; align-items: center; justify-content: space-between; 
+  padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.06); 
+}
+.breakdown-row:last-child { border-bottom: none; padding-bottom: 0; }
+.breakdown-label { display: flex; align-items: center; gap: 12px; font-size: 14px; font-weight: 500; color: var(--text-secondary); }
+.dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; box-shadow: 0 0 8px rgba(255,255,255,0.1); }
+.breakdown-value { display: flex; gap: 6px; align-items: baseline; }
+.value-num { font-size: 16px; font-weight: 700; color: var(--text-primary); }
+.value-text { font-size: 12px; color: var(--text-muted); }
+
+/* ── Recent Content ────────────────────────────────────────── */
+.recent-content { padding: 0 0 8px 0; }
+.recent-list { border-top: 1px solid rgba(255,255,255,0.04); margin-top: 16px; }
+.recent-row { 
+  display: flex; align-items: center; gap: 16px; 
+  padding: 16px 24px; border-bottom: 1px solid rgba(255,255,255,0.04); 
+  transition: background 0.2s;
+}
+.recent-row:last-child { border-bottom: none; }
+.recent-row:hover { background: rgba(255,255,255,0.02); }
+
+.recent-icon-wrap {
+  width: 40px; height: 40px; border-radius: 8px; background: rgba(255,255,255,0.04);
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.recent-icon { color: var(--accent); opacity: 0.9; }
+.recent-info { flex: 1; min-width: 0; }
+.recent-title { font-size: 14px; font-weight: 500; color: var(--text-primary); margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.recent-meta { font-size: 12px; color: var(--text-muted); }
+
+.empty-state { 
+  display: flex; flex-direction: column; align-items: center; 
+  padding: 48px 24px; color: var(--text-muted); 
+}
+.empty-state mat-icon { font-size: 40px; height: 40px; width: 40px; margin-bottom: 12px; opacity: 0.5; }
+.empty-state p { font-size: 14px; margin: 0; }
